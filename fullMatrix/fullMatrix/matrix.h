@@ -16,11 +16,20 @@ private:
 
 public:
 	Matrix();
+	Matrix(int r, int c);
 	Matrix(std::ifstream& inputFh, const char* filename);
+
+	// copy constructor
+	Matrix(const Matrix& m);
+
+	// mult function
+	Matrix mult(const Matrix& b);
 
 	// output func
 	void print() const;
 
+	// destructor
+	~Matrix();
 };
 
 #endif

@@ -2,12 +2,18 @@
 #include <cassert>
 #include <sstream>
 #include <string>
+#include <cstring>
 
 #include "matrix.h"
 
 
 // default constr
 Matrix::Matrix() : rows(0), cols(0), mat(NULL) {};
+
+Matrix::Matrix(int r, int c) : rows(r), cols(c)
+{
+	initializeMatrix(r, c);
+}
 
 // parsing with file handle
 Matrix::Matrix(std::ifstream& inputFh, const char* filename) : rows(0), cols(0), mat(NULL)
@@ -40,6 +46,18 @@ Matrix::Matrix(std::ifstream& inputFh, const char* filename) : rows(0), cols(0),
 	inputFh.close();
 }
 
+// copy constructor
+Matrix::Matrix(const Matrix& m)
+{
+	// allocate the matrix
+	initializeMatrix(m.rows, m.cols);
+
+	// copy over elements
+	for(int i = 0; i < rows; i++)
+		std::memcpy(mat[i], m.mat[i], sizeof(int)*cols);
+
+}
+
 void Matrix::initializeMatrix(int r, int c)
 {
 	rows = r; cols = c;
@@ -68,5 +86,35 @@ void Matrix::print() const
 	}
 }
 
-// TODO: define destructor
+// Multiplication function
+Matrix Matrix::mult(const Matrix& b)
+{
+	// ensure that cols on left matches rows on right
+	assert(cols == b.rows);
 
+	Matrix ret(rows, b.cols);
+	for(int i = 0; i < rows; i++)
+	{
+		for(int j = 0; j < b.cols; j++)
+		{
+			int sum = 0;
+			for(int k = 0; k < cols; k++)
+				sum += mat[i][k] * b.mat[k][j];
+
+			// fill in the value
+			ret.mat[i][j] = sum;
+		}
+	}
+
+	return ret;
+}
+
+// define destructor
+Matrix::~Matrix()
+{
+	// free the rowise allocations first
+	for(int i = 0; i < rows; i++)
+		delete [] mat[i];
+	// free the row pointers
+	delete [] mat;
+}
