@@ -1,7 +1,10 @@
-#include "matrix.h"
-#include <string>
-#include <sstream>
+#include <iostream>
 #include <cassert>
+#include <sstream>
+#include <string>
+
+#include "matrix.h"
+
 
 // default constr
 Matrix::Matrix() : rows(0), cols(0), mat(NULL) {};
@@ -16,7 +19,7 @@ Matrix::Matrix(std::ifstream& inputFh, const char* filename) : rows(0), cols(0),
 	std::getline(inputFh, line);
 
 	int r = 0, c = 0;
-	std::istringstream iss;
+	std::istringstream iss(line);
 	iss >> r;
 	iss >> c;
 
@@ -28,7 +31,7 @@ Matrix::Matrix(std::ifstream& inputFh, const char* filename) : rows(0), cols(0),
 	for(int i = 0; i < rows; i++)
 	{
 		std::getline(inputFh, line);
-		std::istringstream tmp;
+		std::istringstream tmp(line);
 		for(int j = 0; j < cols; j++)
 			tmp >> mat[i][j];
 	}
@@ -50,6 +53,18 @@ void Matrix::initializeMatrix(int r, int c)
 	{
 		mat[i] = new int[cols]();  // calls default constr, so all values should be 0
 		assert(mat[i] != NULL);
+	}
+}
+
+void Matrix::print() const
+{
+	std::cout << "Rows: " << rows << ", cols: " << cols << std::endl;
+
+	for(int i = 0; i < rows; i++)
+	{
+		for(int j = 0; j < cols; j++)
+			std::cout << mat[i][j] << " ";
+		std::cout << std::endl;
 	}
 }
 

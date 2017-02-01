@@ -18,6 +18,9 @@ public:
 	Matrix();
 	Matrix(std::ifstream& inputFh, const char* filename);
 
+	// output func
+	void print() const;
+
 };
 
 #endif
