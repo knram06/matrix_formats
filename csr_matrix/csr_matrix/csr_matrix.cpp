@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -76,7 +75,6 @@ CSRMatrix::CSRMatrix(const char* filename)
 	rowPtrLen = rptr.size();
 	row_ptr = new int[rowPtrLen]();
 	std::copy(rptr.begin(), rptr.end(), row_ptr);
-	//std::memcpy(row_ptr, &rptr[0], rowPtrLen*sizeof(int));
 
 	input.close();
 }
@@ -103,15 +101,22 @@ CSRMatrix::CSRMatrix(const CSRMatrix& csm)
 	initializeArrays(rows, cols, nnz);
 	// copy over values
 	std::copy(csm.val,     csm.val + nnz,     val);
-	//std::memcpy(val,     csm.val,     sizeof(int)*nnz);
 	std::copy(csm.col_ind, csm.col_ind + nnz, col_ind);
-	//std::memcpy(col_ind, csm.col_ind, sizeof(int)*nnz);
 
 	// alloc the rowPtr
 	row_ptr = new int[rowPtrLen];
 	std::copy(csm.row_ptr, csm.row_ptr + rowPtrLen, row_ptr);
-	//std::memcpy(row_ptr, csm.row_ptr, sizeof(int)*rowPtrLen);
 }
+
+// equality operator - using copy-and-swap idiom
+// IMPORTANT - using pass-by-value to generate copy ON THE FLY
+/*
+CSRMatrix& CSRMatrix::operator=(const CSRMatrix csm)
+{
+	swap(*this, csm);
+	return (*this);
+}
+*/
 
 void CSRMatrix::printSparseFormat() const
 {
@@ -163,9 +168,6 @@ void CSRMatrix::printMatrix() const
 		std::cout << std::endl;
 	}
 }
-
-// TODO: define operator=
-
 
 // destructor
 CSRMatrix::~CSRMatrix()

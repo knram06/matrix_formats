@@ -8,5 +8,12 @@ int main()
 	csm.printSparseFormat();
 	csm.printMatrix();
 
+	CSRMatrix c;
+	c = csm;
+	std::cout << "c is" << std::endl;
+	c.printMatrix();
+
+	std::cout << "csm is" << std::endl;
+	csm.printMatrix();
 	return 0;
 }

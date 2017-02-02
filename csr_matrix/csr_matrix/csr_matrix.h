@@ -1,6 +1,8 @@
 #ifndef CSR_MATRIX
 #define CSR_MATRIX
 
+#include <algorithm>
+
 class CSRMatrix
 {
 private:
@@ -19,6 +21,30 @@ public:
 
 	// copy constructor
 	CSRMatrix(const CSRMatrix& csm);
+
+	// operators
+	CSRMatrix& CSRMatrix::operator=(CSRMatrix csm)
+	{
+	    swap(*this, csm);
+	    return (*this);
+    }
+
+	// for copy-and-swap idiom
+	void swap(CSRMatrix& a, CSRMatrix& b)
+	{
+		using std::swap;
+
+		// swap members
+		swap(a.rows, b.rows);
+		swap(a.cols, b.cols);
+		swap(a.nnz,  b.nnz);
+		swap(a.rowPtrLen, b.rowPtrLen);
+
+		// swap array pointers
+		swap(a.val, b.val);
+		swap(a.col_ind, b.col_ind);
+		swap(a.row_ptr, b.row_ptr);
+	}
 
 	// print functions
 	void printSparseFormat() const;
