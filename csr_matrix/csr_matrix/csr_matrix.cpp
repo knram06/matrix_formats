@@ -110,6 +110,36 @@ void CSRMatrix::printSparseFormat() const
 	std::cout << std::endl;
 }
 
+// print the sparse matrix in dense form
+void CSRMatrix::printMatrix() const
+{
+	std::cout << "rows: " << rows << ", cols: " << cols << std::endl;
+
+	int k = 0;
+	for(int i = 0; i < rowPtrLen-1; i++)
+	{
+		int startCol = 0;
+		for(int j = row_ptr[i]; j < row_ptr[i+1]; j++)
+		{
+			while(startCol != col_ind[j])
+			{
+				std::cout << 0 << " ";
+				startCol++;
+			}
+			std::cout << val[k] << " ";
+			k++; startCol++;
+		} // end of for loop in j, across cols in a row
+
+		// print 0s for remaining length
+		while(startCol <= (cols-1))
+		{
+			std::cout << 0 << " ";
+			startCol++;
+		} // end of while
+		std::cout << std::endl;
+	}
+}
+
 // TODO: define destructor, free up alloc'ed memory
 // define copy constructor, operator=
 

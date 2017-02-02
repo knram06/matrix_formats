@@ -19,6 +19,7 @@ public:
 
 	// print functions
 	void printSparseFormat() const;
+	void printMatrix() const;
 };
 
 #endif
