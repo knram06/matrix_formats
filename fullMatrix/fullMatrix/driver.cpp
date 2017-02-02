@@ -3,11 +3,10 @@
 
 int main()
 {
-	std::ifstream input;
-	Matrix A(input, "matrixA.txt");
+	Matrix A("matrixA.txt");
 	A.print();
 
-	Matrix B(input, "matrixB.txt");
+	Matrix B("matrixB.txt");
 	B.print();
 
 	std::cout << "Multiplying the two matrix..." << std::endl;

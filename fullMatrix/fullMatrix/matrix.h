@@ -17,11 +17,12 @@ private:
 public:
 	Matrix();
 	Matrix(int r, int c);
-	Matrix(std::ifstream& inputFh, const char* filename);
+	Matrix(const char* filename);
 
 	// copy constructor
 	Matrix(const Matrix& m);
 
+	// TODO: define operator=
 	// mult function
 	Matrix mult(const Matrix& b);
 

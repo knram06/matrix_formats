@@ -16,8 +16,9 @@ Matrix::Matrix(int r, int c) : rows(r), cols(c)
 }
 
 // parsing with file handle
-Matrix::Matrix(std::ifstream& inputFh, const char* filename) : rows(0), cols(0), mat(NULL)
+Matrix::Matrix(const char* filename) : rows(0), cols(0), mat(NULL)
 {
+	std::ifstream inputFh;
 	inputFh.open(filename); // assuming the file exists
 
 	// read the rows and cols from first line
