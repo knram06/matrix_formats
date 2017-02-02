@@ -17,9 +17,15 @@ public:
 	// matrix from
 	CSRMatrix(const char* filename);
 
+	// copy constructor
+	CSRMatrix(const CSRMatrix& csm);
+
 	// print functions
 	void printSparseFormat() const;
 	void printMatrix() const;
+
+	// destructor
+	~CSRMatrix();
 };
 
 #endif

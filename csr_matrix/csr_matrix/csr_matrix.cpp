@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -73,8 +74,9 @@ CSRMatrix::CSRMatrix(const char* filename)
 
 	// fill in row_ptr array related members and memcpy from vector
 	rowPtrLen = rptr.size();
-	row_ptr = new int[rowPtrLen];
-	std::memcpy(row_ptr, &rptr[0], rowPtrLen*sizeof(int));
+	row_ptr = new int[rowPtrLen]();
+	std::copy(rptr.begin(), rptr.end(), row_ptr);
+	//std::memcpy(row_ptr, &rptr[0], rowPtrLen*sizeof(int));
 
 	input.close();
 }
@@ -85,8 +87,30 @@ void CSRMatrix::initializeArrays(int r, int c, int nz)
 	// set class attribs
 	rows = r; cols = c; nnz = nz;
 
-	val = new int[nnz];
-	col_ind = new int[nnz];
+	val = new int[nnz]();
+	col_ind = new int[nnz]();
+}
+
+// Copy Constructor
+CSRMatrix::CSRMatrix(const CSRMatrix& csm)
+{
+	rows = csm.rows;
+	cols = csm.rows;
+	nnz  = csm.nnz;
+	rowPtrLen = csm.rowPtrLen;
+
+	// alloc memory
+	initializeArrays(rows, cols, nnz);
+	// copy over values
+	std::copy(csm.val,     csm.val + nnz,     val);
+	//std::memcpy(val,     csm.val,     sizeof(int)*nnz);
+	std::copy(csm.col_ind, csm.col_ind + nnz, col_ind);
+	//std::memcpy(col_ind, csm.col_ind, sizeof(int)*nnz);
+
+	// alloc the rowPtr
+	row_ptr = new int[rowPtrLen];
+	std::copy(csm.row_ptr, csm.row_ptr + rowPtrLen, row_ptr);
+	//std::memcpy(row_ptr, csm.row_ptr, sizeof(int)*rowPtrLen);
 }
 
 void CSRMatrix::printSparseFormat() const
@@ -140,8 +164,17 @@ void CSRMatrix::printMatrix() const
 	}
 }
 
-// TODO: define destructor, free up alloc'ed memory
-// define copy constructor, operator=
+// TODO: define operator=
+
+
+// destructor
+CSRMatrix::~CSRMatrix()
+{
+	// free up allocated memory
+	delete [] val;
+	delete [] col_ind;
+	delete [] row_ptr;
+}
 
 
 
