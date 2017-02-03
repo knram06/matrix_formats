@@ -46,6 +46,10 @@ public:
 		swap(a.row_ptr, b.row_ptr);
 	}
 
+	// access functions
+	CSRMatrix mult(const CSRMatrix& b);
+	int getElement(int row, int col) const;
+
 	// print functions
 	void printSparseFormat() const;
 	void printMatrix() const;

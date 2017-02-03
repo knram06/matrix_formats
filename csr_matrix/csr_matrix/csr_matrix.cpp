@@ -7,6 +7,25 @@
 
 #include "csr_matrix.h"
 
+// binary search
+int binarySearch(int *arr, int key, int start, int end)
+{
+	while(start <= end)
+	{
+		int mid = (start+end)/2;
+
+		if(key == arr[mid])
+			return mid;
+		else if(key < arr[mid])
+			end = mid-1;
+		else
+			start = mid+1;
+	}
+
+	return -1;
+}
+
+
 // default contructor
 CSRMatrix::CSRMatrix() : rows(0), cols(0), nnz(0), rowPtrLen(0), col_ind(NULL), val(NULL), row_ptr(NULL) {};
 
@@ -167,6 +186,73 @@ void CSRMatrix::printMatrix() const
 		} // end of while
 		std::cout << std::endl;
 	}
+}
+
+CSRMatrix CSRMatrix::mult(const CSRMatrix& csm)
+{
+	// validate that A's cols matches b's rows count
+	assert(cols == csm.rows);
+
+	// won't know the nnz count beforehand no? fill with vectors?
+	std::vector<int> rp, c_i, v;
+
+	// iterate across rows in A matrix
+	for(int i = 0; i < rowPtrLen-1; i++)
+	{
+		bool firstNZFound = false;
+		for(int j = 0; j < csm.cols; j++)
+		{
+			int sum = 0;
+			for(int k = row_ptr[i]; k < row_ptr[i+1]; k++)
+				sum += val[k] * csm.getElement(k, j);
+
+			// if sum is not zero, then store
+			if(sum != 0)
+			{
+				// check and update row_ptr
+				if(!firstNZFound)
+				{
+					rp.push_back(i);  // what if rows are all zero?
+					firstNZFound = true;
+				}
+				c_i.push_back(j);
+				v.push_back(sum);
+			} // end of if sum not 0
+
+		} // end of j for loop
+	} // end of i for loop
+
+	// number of nonzeros is the size of either c_i or v array
+	int numNz = c_i.size();
+	rp.push_back(numNz); // fill last element
+
+	// create a new mat with dim = (a.rows, b.cols)
+	CSRMatrix c;
+	// prealloc arrays
+	c.initializeArrays(rows, csm.cols, numNz);
+	// copy over values
+	std::copy(c_i.begin(), c_i.end(), c.col_ind);
+	std::copy(v.begin(),     v.end(),     c.val);
+
+	// prealloc & copy row_ptr array
+	c.rowPtrLen = rp.size();
+	c.row_ptr = new int[c.rowPtrLen];
+	std::copy(rp.begin(), rp.end(), c.row_ptr);
+}
+
+// accessor function
+int CSRMatrix::getElement(int r, int c) const
+{
+	// use the row r to pick out col range
+	int start = row_ptr[r];
+	int end   = row_ptr[r+1]-1;
+
+	// start to end will be a sorted array of column indices
+	// so do a binary search to get a match for col 'c'
+	int index = binarySearch(col_ind, c, start, end);
+	if(index == -1)
+		return 0;
+	return val[index];
 }
 
 // destructor
