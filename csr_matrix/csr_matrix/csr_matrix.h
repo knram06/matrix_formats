@@ -2,13 +2,16 @@
 #define CSR_MATRIX
 
 #include <algorithm>
+#include <vector>
 
 class CSRMatrix
 {
 private:
 	int rows, cols;
-	int nnz, rowPtrLen;
-	int *val, *col_ind, *row_ptr;
+	//int nnz, rowPtrLen;
+	//int *val, *col_ind, *row_ptr;
+	std::vector<double> val;
+	std::vector<int> col_ind, row_ptr;
 
 	void initializeArrays(int r, int c, int nz);
 
@@ -17,7 +20,7 @@ public:
 
 	// constructor that takes in filename to read and build
 	// matrix from
-	CSRMatrix(const char* filename);
+	CSRMatrix(std:string& filename);
 
 	// copy constructor
 	CSRMatrix(const CSRMatrix& csm);
@@ -47,8 +50,12 @@ public:
 	}
 
 	// access functions
-	CSRMatrix mult(const CSRMatrix& b);
 	int getElement(int row, int col) const;
+
+	// matrix funcs
+	CSRMatrix mult(const CSRMatrix& b);
+	std::vector<int> mult(const std::vector<int>& v);
+	//CSRMatrix transpose() const;
 
 	// print functions
 	void printSparseFormat() const;

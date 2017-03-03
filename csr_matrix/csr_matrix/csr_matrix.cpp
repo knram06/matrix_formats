@@ -240,6 +240,28 @@ CSRMatrix CSRMatrix::mult(const CSRMatrix& csm)
 	std::copy(rp.begin(), rp.end(), c.row_ptr);
 }
 
+// define mat-vec operation
+std::vector<int> CSRMatrix::mult(const std::vector<int>& v)
+{
+	std::vector<int> ret(v);
+
+	for(int i = 0; i < rowPtrLen-1; i++)
+	{
+		int sum = 0;
+		for(int k = row_ptr[i]; k < row_ptr[i+1]; k++)
+		{
+			j = col_ind[k];
+			sum += val[k] * v[j];
+		}
+
+		ret[i] = sum;
+	}
+	return ret;
+}
+
+// transpose operator
+//CSRMatrix
+
 // accessor function
 int CSRMatrix::getElement(int r, int c) const
 {
@@ -263,6 +285,3 @@ CSRMatrix::~CSRMatrix()
 	delete [] col_ind;
 	delete [] row_ptr;
 }
-
-
-
